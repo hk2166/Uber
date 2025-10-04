@@ -123,16 +123,16 @@ Content-Type: `application/json`
   {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGUxNjc4OGYyMTZhMWI5OGZkMDJhMzciLCJpYXQiOjE3NTk2MDI3ODh9.eYMXuKDV9GGVr9QbhzFs5MnKXpiTAg-T9Nq1qKpFANo",
     "user": {
-        "fullname": {
-            "firstName": "Mark",
-            "lastName": "Doe"
-        },
-        "_id": "68e16788f216a1b98fd02a37",
-        "email": "Mark@example.com",
-        "password": "$2b$10$Gud/IRY51DZbo/TZcPhLle9EO4vbhCKwy0.wojM6afAob8oJB32NK",
-        "__v": 0
+      "fullname": {
+        "firstName": "Mark",
+        "lastName": "Doe"
+      },
+      "_id": "68e16788f216a1b98fd02a37",
+      "email": "Mark@example.com",
+      "password": "$2b$10$Gud/IRY51DZbo/TZcPhLle9EO4vbhCKwy0.wojM6afAob8oJB32NK",
+      "__v": 0
     }
-}
+  }
   ```
   > **Note:** The password is not included in the response.
 
@@ -159,14 +159,127 @@ Content-Type: `application/json`
 
 ---
 
-## Additional Information
+## User Profile Endpoint
 
-- The endpoints use:
-  - **Express Validator** for input validation.
-  - **Mongoose** for MongoDB interactions.
-  - **Bcrypt** for password hashing.
-  - **JSON Web Token (JWT)** for generating authentication tokens.
-- Ensure that MongoDB is running and the connection string in your environment variable is correct.
-- The hashed password is stored in the database, and the generated JWT is used for authentication in subsequent requests.
+### Endpoint
+
+**GET** `/users/profile`
+
+### Description
+
+Retrieves the profile information of the authenticated user. Requires a valid JWT token.
+
+### Authentication
+
+Requires Bearer token in Authorization header:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+### Responses
+
+#### Successful Response
+
+- **Status Code:** `200 OK`
+- **Response Example:**
+  ```json
+  {
+    "user": {
+      "_id": "userObjectId",
+      "fullname": {
+        "firstName": "John",
+        "lastName": "Doe"
+      },
+      "email": "john@example.com",
+      "socketId": "optionalSocketId"
+    }
+  }
+  ```
+
+#### Error Responses
+
+- **400 Bad Request**
+
+  - Returned when token is missing or invalid
+
+  ```json
+  {
+    "message": "Invalid or missing auth token"
+  }
+  ```
+
+- **401 Unauthorized**
+
+  - Returned when token has been blacklisted
+
+  ```json
+  {
+    "message": "Token has been blacklisted. Please login again."
+  }
+  ```
+
+- **404 Not Found**
+  - Returned when user associated with token is not found
+  ```json
+  {
+    "message": "User not found"
+  }
+  ```
+
+## User Logout Endpoint
+
+### Endpoint
+
+**GET** `/users/logout`
+
+### Description
+
+Logs out the user by clearing the authentication token cookie and blacklisting the current token.
+
+### Authentication
+
+Requires Bearer token in Authorization header:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+### Responses
+
+#### Successful Response
+
+- **Status Code:** `200 OK`
+- **Response Example:**
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+#### Error Response
+
+- **400 Bad Request**
+  - Returned when token is missing
+  ```json
+  {
+    "message": "Invalid or missing auth token"
+  }
+  ```
+
+### Effects
+
+- Clears the authentication cookie
+- Adds the token to blacklist to prevent reuse
+- Future requests with the same token will be rejected
+
+---
+
+## Security Notes
+
+- All authenticated endpoints require a valid JWT token
+- Tokens are automatically invalidated after logout
+- Expired or invalid tokens will return appropriate error responses
+- The JWT secret should be kept secure and never exposed in the codebase
 
 Happy Coding!
