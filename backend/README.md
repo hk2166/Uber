@@ -275,6 +275,135 @@ Authorization: Bearer <your_jwt_token>
 
 ---
 
+## Captain Registration Endpoint
+
+### Endpoint
+
+**POST** `/captain/register`
+
+### Description
+
+This endpoint registers a new captain with their vehicle details. It validates the input, hashes the password, creates a new captain in the database, and returns a JWT token upon successful registration.
+
+### Request Body
+
+Content-Type: `application/json`
+
+#### Required Data Format
+
+```json
+{
+  "fullname": {
+    "firstName": "test_captain",
+    "lastName": "test_captain_last"
+  },
+  "email": "test_captain@gmail.com",
+  "password": "captain123",
+  "phoneNumber": "96107XXXX",
+  "status": "active",
+  "vehicle": {
+    "color": "red",
+    "plate": "RJ 05 1737",
+    "capacity": 3,
+    "vehicleType": "car"
+  }
+}
+```
+
+#### Field Requirements
+
+- **fullname.firstName**: String, required, minimum 3 characters
+- **fullname.lastName**: String, required, minimum 3 characters
+- **email**: String, required, valid email format
+- **password**: String, required, minimum 6 characters
+- **phoneNumber**: String, required
+- **status**: String, optional (defaults to 'inactive'), one of: ['active', 'inactive', 'suspended']
+- **vehicle.color**: String, required, minimum 3 characters
+- **vehicle.plate**: String, required, minimum 3 characters, unique
+- **vehicle.capacity**: Number, required, minimum 1
+- **vehicle.vehicleType**: String, required, one of: ['motorcycle', 'car', 'auto']
+
+### Responses
+
+#### Successful Registration
+
+- **Status Code:** `201 Created`
+- **Response Example:**
+
+```json
+{
+  "captain": {
+    "_id": "captainObjectId",
+    "fullname": {
+      "firstName": "test_captain",
+      "lastName": "test_captain_last"
+    },
+    "email": "test_captain@gmail.com",
+    "status": "active",
+    "vehicle": {
+      "color": "red",
+      "plate": "RJ 05 1737",
+      "capacity": 3,
+      "vehicleType": "car"
+    }
+  },
+  "token": "jwtTokenHere"
+}
+```
+
+#### Error Responses
+
+- **400 Bad Request**
+
+  - When validation fails
+
+  ```json
+  {
+    "errors": [
+      {
+        "type": "field",
+        "msg": "First name must be at least 3 characters long",
+        "path": "fullname.firstName",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+  - When email already exists
+
+  ```json
+  {
+    "message": "Captain with this email already exists"
+  }
+  ```
+
+- **500 Internal Server Error**
+  ```json
+  {
+    "message": "Internal server error"
+  }
+  ```
+
+### Validation Rules
+
+- Email must be valid and unique
+- First name and last name must be at least 3 characters
+- Password must be at least 6 characters
+- Phone number is required
+- Vehicle color and plate must be at least 3 characters
+- Vehicle capacity must be at least 1
+- Vehicle type must be one of: ['motorcycle', 'car', 'auto']
+
+### Security Features
+
+- Password is hashed before storage
+- JWT token is generated for authentication
+- Email uniqueness is verified
+- Input validation for all required fields
+
+---
+
 ## Security Notes
 
 - All authenticated endpoints require a valid JWT token
