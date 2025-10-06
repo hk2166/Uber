@@ -275,132 +275,201 @@ Authorization: Bearer <your_jwt_token>
 
 ---
 
-## Captain Registration Endpoint
+## Captain Routes Documentation
 
-### Endpoint
+### 1. Register Captain
 
-**POST** `/captain/register`
+**POST** `/captains/register`
 
-### Description
-
-This endpoint registers a new captain with their vehicle details. It validates the input, hashes the password, creates a new captain in the database, and returns a JWT token upon successful registration.
-
-### Request Body
-
-Content-Type: `application/json`
-
-#### Required Data Format
+#### Request Body
 
 ```json
 {
   "fullname": {
-    "firstName": "test_captain",
-    "lastName": "test_captain_last"
+    "firstName": "John", // required, min 3 characters
+    "lastName": "Driver" // required, min 3 characters
   },
-  "email": "test_captain@gmail.com",
-  "password": "captain123",
-  "phoneNumber": "96107XXXX",
-  "status": "active",
+  "email": "john.driver@example.com", // required, valid email format
+  "password": "Captain@123", // required, min 6 characters
+  "phoneNumber": "9876543210", // required, exactly 10 digits
+  "status": "active", // optional, enum: ["active", "inactive", "suspended"]
   "vehicle": {
-    "color": "red",
-    "plate": "RJ 05 1737",
-    "capacity": 3,
-    "vehicleType": "car"
+    "color": "Silver", // required, min 3 characters
+    "plate": "RJ 14 CA 2023", // required, unique
+    "capacity": 4, // required, min: 1
+    "vehicleType": "car" // required, enum: ["car", "motorcycle", "auto"]
   }
 }
 ```
 
-#### Field Requirements
-
-- **fullname.firstName**: String, required, minimum 3 characters
-- **fullname.lastName**: String, required, minimum 3 characters
-- **email**: String, required, valid email format
-- **password**: String, required, minimum 6 characters
-- **phoneNumber**: String, required
-- **status**: String, optional (defaults to 'inactive'), one of: ['active', 'inactive', 'suspended']
-- **vehicle.color**: String, required, minimum 3 characters
-- **vehicle.plate**: String, required, minimum 3 characters, unique
-- **vehicle.capacity**: Number, required, minimum 1
-- **vehicle.vehicleType**: String, required, one of: ['motorcycle', 'car', 'auto']
-
-### Responses
-
-#### Successful Registration
-
-- **Status Code:** `201 Created`
-- **Response Example:**
+#### Success Response (201 Created)
 
 ```json
 {
+  "success": true,
   "captain": {
-    "_id": "captainObjectId",
+    "_id": "68e2901ff7f340548498c5cb",
     "fullname": {
-      "firstName": "test_captain",
-      "lastName": "test_captain_last"
+      "firstName": "John",
+      "lastName": "Driver"
     },
-    "email": "test_captain@gmail.com",
+    "email": "john.driver@example.com",
     "status": "active",
     "vehicle": {
-      "color": "red",
-      "plate": "RJ 05 1737",
-      "capacity": 3,
+      "color": "Silver",
+      "plate": "RJ 14 CA 2023",
+      "capacity": 4,
       "vehicleType": "car"
     }
   },
-  "token": "jwtTokenHere"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // JWT token for authentication
 }
 ```
 
-#### Error Responses
+### 2. Login Captain
 
-- **400 Bad Request**
+**POST** `/captains/login`
 
-  - When validation fails
+#### Request Body
 
-  ```json
-  {
-    "errors": [
-      {
-        "type": "field",
-        "msg": "First name must be at least 3 characters long",
-        "path": "fullname.firstName",
-        "location": "body"
-      }
-    ]
+```json
+{
+  "email": "john.driver@example.com", // required, registered email
+  "password": "Captain@123" // required, min 6 characters
+}
+```
+
+#### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "captain": {
+    "_id": "68e2901ff7f340548498c5cb",
+    "fullname": {
+      "firstName": "John",
+      "lastName": "Driver"
+    },
+    "email": "john.driver@example.com",
+    "status": "active",
+    "vehicle": {
+      "color": "Silver",
+      "plate": "RJ 14 CA 2023",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
   }
-  ```
+}
+```
 
-  - When email already exists
+### 3. Get Captain Profile
 
-  ```json
-  {
-    "message": "Captain with this email already exists"
+**GET** `/captains/profile`
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // JWT token from login
+}
+```
+
+#### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "captain": {
+    "_id": "68e2901ff7f340548498c5cb",
+    "fullname": {
+      "firstName": "John",
+      "lastName": "Driver"
+    },
+    "email": "john.driver@example.com",
+    "status": "active",
+    "vehicle": {
+      "color": "Silver",
+      "plate": "RJ 14 CA 2023",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
   }
-  ```
+}
+```
 
-- **500 Internal Server Error**
-  ```json
-  {
-    "message": "Internal server error"
-  }
-  ```
+### 4. Logout Captain
 
-### Validation Rules
+**GET** `/captains/logout`
 
-- Email must be valid and unique
-- First name and last name must be at least 3 characters
-- Password must be at least 6 characters
-- Phone number is required
-- Vehicle color and plate must be at least 3 characters
-- Vehicle capacity must be at least 1
-- Vehicle type must be one of: ['motorcycle', 'car', 'auto']
+#### Headers
 
-### Security Features
+```json
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // JWT token from login
+}
+```
 
-- Password is hashed before storage
-- JWT token is generated for authentication
-- Email uniqueness is verified
-- Input validation for all required fields
+#### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Logged out successfully"
+}
+```
+
+### Error Responses
+
+#### Validation Error (400 Bad Request)
+
+```json
+{
+  "errors": [
+    {
+      "type": "field",
+      "msg": "First name must be at least 3 characters long",
+      "path": "fullname.firstName",
+      "location": "body"
+    }
+  ]
+}
+```
+
+#### Authentication Error (401 Unauthorized)
+
+```json
+{
+  "success": false,
+  "message": "Invalid credentials"
+}
+```
+
+#### Token Error (401 Unauthorized)
+
+```json
+{
+  "success": false,
+  "message": "Token has been invalidated. Please login again"
+}
+```
+
+#### Server Error (500 Internal Server Error)
+
+```json
+{
+  "success": false,
+  "message": "Internal server error"
+}
+```
+
+### Notes
+
+- All passwords are hashed before storage
+- JWT tokens are valid for 24 hours
+- Blacklisted tokens (after logout) cannot be reused
+- Phone numbers must be exactly 10 digits
+- Vehicle plate numbers must be unique in the system
 
 ---
 
