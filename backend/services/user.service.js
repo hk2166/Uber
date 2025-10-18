@@ -13,8 +13,8 @@ module.exports.createUser = async ({ firstname, lastname, email, password }) => 
 
     const user = await userModel.create({
         fullname: {
-            firstName: firstname,  // Changed from incorrect nesting
-            lastName: lastname    // Changed from incorrect nesting
+            firstName: firstname,  
+            lastName: lastname    
         },
         email,
         password
