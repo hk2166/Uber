@@ -1,34 +1,51 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { CaptainDataContext } from "../context/CaptainContext"; 
+import { useNavigate } from "react-router-dom";
+
 
 
 
 const CaptainLogin = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [captainData, setCaptainData] = React.useState({});
+  const { setCaptain } = React.useContext(CaptainDataContext);
+  const navigate = useNavigate();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setCaptainData({ 
+    const captain = {
       email:email, 
-      password:password
-     });
+      password
+    }
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/login`, captain)
+
+    if(response.status === 200){
+      const data = response.data
+      setCaptain(data.captain)
+      localStorage.setItem('token', data.token)
+      navigate('/CaptainHome')
+    }
+
     console.log("form submitted");
     setEmail('');
     setPassword('');
-    console.log(captainData);
+    console.log(captain);
     
   };
 
   return (
     <div className="p-7 h-screen flex flex-col justify-between">
       <div>
+        <a href="/">
         <img
           className="w-20 mb-3"
           src="https://www.svgrepo.com/show/505031/uber-driver.svg"
           alt=""
         />
+        </a>
 
         <form onSubmit={submitHandler}>
           <h3 className="text-lg font-medium mb-2">What's your email</h3>
