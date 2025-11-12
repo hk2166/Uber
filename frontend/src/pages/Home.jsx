@@ -156,7 +156,7 @@ const Home = () => {
 
       {/* Vehicle Selection */}
       <div ref={vehiclePanelRef} className='fixed bottom-0 left-0 w-full translate-y-full z-10 bg-white p-4 shadow-lg pb-0'>
-        <VehiclePanel setVehicleFound={setVehicleFound} setVehiclePanel={setvehiclePanel} active={active} setActive={setActive} />
+        <VehiclePanel setConfirmRidePanel={setconfirmRidePanel} setVehiclePanel={setvehiclePanel} active={active} setActive={setActive} />
       </div>
 
       <div ref={confirmRidePanelRef} className='fixed w-full translate-y-full z-10 bottom-0 left-0 bg-white px-3 py-6 pt-12'>
@@ -164,7 +164,7 @@ const Home = () => {
       </div>
 
       <div ref={vehicleFoundRef} className='fixed w-full translate-y-full z-10 bottom-0 left-0 bg-white px-3 py-6 pt-12'>
-        <LookingForDriver setVehicleFound={setVehicleFound} setConfirmRidePanel={setconfirmRidePanel} />
+        <LookingForDriver setVehicleFound={setVehicleFound} setWaitingForDriver={setWaitingForDriver} />
       </div>
 
       <div ref={waitingForDriverRef} className='fixed w-full translate-y-full z-10 bottom-0 left-0 bg-white px-3 py-6 pt-12'>

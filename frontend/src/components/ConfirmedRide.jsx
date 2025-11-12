@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ConfirmedRide({ setConfirmRidePanel }) {
+function ConfirmedRide({ setConfirmRidePanel, setVehicleFound }) {
   return (
     <div>
       <h5
@@ -10,26 +10,14 @@ function ConfirmedRide({ setConfirmRidePanel }) {
         <i className='text-3xl text-gray-400 ri-arrow-down-wide-line'></i>
       </h5>
 
-      <div className='flex items-center justify-between mb-4'>
-        <img
-          className='h-12 rounded-lg'
-          src='https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg'
-          alt='Driver'
-        />
-        <div className='text-right'>
-          <h2 className='text-lg font-bold'>Sarthak</h2>
-          <p className='text-xl font-semibold -mt-1 -mb-1'>MH12 AB124</p>
-          <p className='text-sm text-gray-600'>Maruti Swift Desire</p>
-        </div>
-      </div>
-
-      <div className='flex items-center justify-between p-2 text-lg mb-4'>
-        <p>
-          Arriving in <span className='font-semibold'>2 mins</span>
-        </p>
-      </div>
+      <h3 className='text-2xl font-semibold mb-5'>Confirm your Ride</h3>
 
       <div className='flex flex-col items-center'>
+        <img
+          className='h-20 mb-4'
+          src='https://www.asaproadworthys.com.au/wp-content/uploads/2021/11/Select.jpeg'
+          alt='Vehicle'
+        />
         <div className='w-full'>
           <div className='flex items-center gap-3 p-2 border-b-2'>
             <i className='text-lg ri-map-pin-user-fill'></i>
@@ -56,6 +44,16 @@ function ConfirmedRide({ setConfirmRidePanel }) {
           </div>
         </div>
       </div>
+
+      <button
+        onClick={() => {
+          setConfirmRidePanel(false)
+          setVehicleFound(true)
+        }}
+        className='w-full mt-5 bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors'
+      >
+        Confirm Ride
+      </button>
     </div>
   )
 }

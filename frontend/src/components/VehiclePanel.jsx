@@ -1,6 +1,6 @@
 import React from 'react'
 
-const VehiclePanel = ({ setVehiclePanel, setVehicleFound, active, setActive }) => {
+const VehiclePanel = ({ setVehiclePanel, setConfirmRidePanel, active, setActive }) => {
   return (
     <div>
         <h5 
@@ -16,7 +16,7 @@ const VehiclePanel = ({ setVehiclePanel, setVehicleFound, active, setActive }) =
           onClick={() => {
             setActive('UberBike')
             setVehiclePanel(false)
-            setVehicleFound(true)
+            setConfirmRidePanel(true)
           }}
           className={`flex items-center justify-between w-full border rounded-xl p-2 mb-2 cursor-pointer ${
             active === 'UberBike' ? 'border-black bg-gray-200' : 'border-gray-500'
@@ -49,7 +49,7 @@ const VehiclePanel = ({ setVehiclePanel, setVehicleFound, active, setActive }) =
           onClick={() => {
             setActive('Auto')
             setVehiclePanel(false)
-            setVehicleFound(true)
+            setConfirmRidePanel(true)
           }}
           className={`flex items-center justify-between w-full border rounded-xl p-2 mb-2 cursor-pointer ${
             active === 'Auto' ? 'border-black bg-gray-200' : 'border-gray-500'
@@ -84,7 +84,7 @@ const VehiclePanel = ({ setVehiclePanel, setVehicleFound, active, setActive }) =
           onClick={() => {
             setActive('UberGo')
             setVehiclePanel(false)
-            setVehicleFound(true)
+            setConfirmRidePanel(true)
           }}
           className={`flex items-center justify-between w-full border rounded-xl p-2 mb-2 cursor-pointer ${
             active === 'UberGo' ? 'border-black bg-gray-200' : 'border-gray-500'
@@ -119,7 +119,7 @@ const VehiclePanel = ({ setVehiclePanel, setVehicleFound, active, setActive }) =
           onClick={() => {
             setActive('UberXL')
             setVehiclePanel(false)
-            setVehicleFound(true)
+            setConfirmRidePanel(true)
           }}
           className={`flex items-center justify-between w-full border rounded-xl p-2 mb-2 cursor-pointer ${
             active === 'UberXL' ? 'border-black bg-gray-200' : 'border-gray-500'

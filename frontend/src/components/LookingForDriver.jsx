@@ -4,7 +4,7 @@ function LookingForDriver(props) {
   useEffect(() => {
     const timer = setTimeout(() => {
       props.setVehicleFound(false)
-      props.setConfirmRidePanel(true)
+      props.setWaitingForDriver(true)
     }, 5000)
 
     return () => clearTimeout(timer)
@@ -44,7 +44,7 @@ function LookingForDriver(props) {
             <i className='text-lg ri-map-pin-2-fill'></i>
             <div>
               <h3 className='text-lg font-medium'>562/11-A</h3>
-              <p className='text-sm -mt-1 text-gray-600'>Kankariya Talab, Ahemdabad</p>
+              <p className='text-sm -mt-1 text-gray-600'>Your Space Boys Hostel</p>
             </div>
           </div>
 

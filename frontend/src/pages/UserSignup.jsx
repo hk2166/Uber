@@ -10,13 +10,9 @@ const UserSignup = () => {
   const [ password, setPassword ] = useState('')
   const [ firstName, setFirstName ] = useState('')
   const [ lastName, setLastName ] = useState('')
-  const [ userData, setUserData ] = useState({})
 
   const navigate = useNavigate()
-
-
-
-  const { user, setUser } = React.useContext(UserDataContext)
+  const { setUser } = React.useContext(UserDataContext)
 
 
 
@@ -32,24 +28,25 @@ const UserSignup = () => {
       password: password
     }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
 
-    if (response.status === 201) {
-      const data = response.data
-      setUser(data.user)
-      navigate('/home')
-      localStorage.setItem('token', data.token);
-      
+      if (response.status === 201) {
+        const data = response.data
+        setUser(data.user)
+        navigate('/home')
+        localStorage.setItem('token', data.token);
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      const errorMessage = error.response?.data?.message || error.response?.data?.errors?.[0]?.msg || 'Registration failed. Please try again.';
+      alert(errorMessage);
     }
-    
 
     setEmail('')
     setFirstName('')
     setLastName('')
     setPassword('')
-
-    console.log(response)
-
   }
   return (
     <div>

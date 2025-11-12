@@ -1,4 +1,4 @@
-import React, {useState,useContext} from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -7,8 +7,7 @@ import axios from "axios";
 const UserLogin = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [userData, setUserData] = React.useState({});
-  const { user, setUser } = useContext(UserDataContext);
+  const { setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
@@ -19,21 +18,22 @@ const UserLogin = () => {
       password: password,
     };
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData)
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData)
 
-    if (response.status === 200) {
-      const data = response.data
-      setUser(data.user)
-      navigate('/home')
-      localStorage.setItem('token', data.token);
-    } 
+      if (response.status === 200) {
+        const data = response.data
+        setUser(data.user)
+        navigate('/home')
+        localStorage.setItem('token', data.token);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert(error.response?.data?.message || 'Login failed. Please try again.');
+    }
 
-
-    console.log("form submitted");
     setEmail('');
     setPassword('');
-    console.log(userData);
-    
   };
 
   return (

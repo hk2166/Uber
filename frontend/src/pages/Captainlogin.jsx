@@ -20,20 +20,22 @@ const CaptainLogin = () => {
       password
     }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/login`, captain)
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/login`, captain)
 
-    if(response.status === 200){
-      const data = response.data
-      setCaptain(data.captain)
-      localStorage.setItem('token', data.token)
-      navigate('/CaptainHome')
+      if(response.status === 200){
+        const data = response.data
+        setCaptain(data.captain)
+        localStorage.setItem('token', data.token)
+        navigate('/CaptainHome')
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert(error.response?.data?.message || 'Login failed. Please try again.');
     }
 
-    console.log("form submitted");
     setEmail('');
     setPassword('');
-    console.log(captain);
-    
   };
 
   return (
